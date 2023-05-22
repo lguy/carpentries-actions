@@ -80,7 +80,6 @@ runs:
             writeLines(readLines("${{ github.workspace }}/DESCRIPTION"))
             #vise::ci_sysreqs(renv::paths$lockfile(), execute = TRUE)
           }
-          cat("M")
 
       - name: "Fortify Local {renv} Packages"
         shell: Rscript {0}
