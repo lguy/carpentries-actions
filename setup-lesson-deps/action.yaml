@@ -53,6 +53,7 @@ runs:
           }
           wd <- '${{ github.workspace }}'
           has_lock <- file.exists(file.path(wd, 'renv'))
+          cat("A")
           if (Sys.info()[["sysname"]] == "Linux" && has_lock) {
             req("renv")
             req("remotes")
@@ -60,26 +61,38 @@ runs:
             # extract the function
             sov <- rmts$supported_os_versions
             # if 22.04 is not present, we need to modify the function
-            # if (!grepl("22.04", body(sov)[2])) {
-            #   unlockBinding("supported_os_versions", rmts)
-            #   # modify the list in the body to include 22.04
-            #   vers <- eval(parse(text = as.character(body(sov)[2])))
-            #   vers$ubuntu <- c(vers$ubuntu, "22.04")
-            #   # replace the body
-            #   body(sov)[2] <- list(str2lang(paste(capture.output(dput(vers)), collapse = "")))
-            #   # replace the function in the namespace
-            #   rmts$supported_os_versions <- sov
-            # }
+            cat("B")
+            if (!grepl("22.04", body(sov)[2])) {
+              unlockBinding("supported_os_versions", rmts)
+              # modify the list in the body to include 22.04
+              vers <- eval(parse(text = as.character(body(sov)[2])))
+              vers$ubuntu <- c(vers$ubuntu, "22.04")
+              # replace the body
+              cat("C")
+              body(sov)[2] <- list(str2lang(paste(capture.output(dput(vers)), collapse = "")))
+              # replace the function in the namespace
+              rmts$supported_os_versions <- sov
+              cat("D")
+            }
+            cat("E")
             req("desc")
+            cat("F")
             remotes::install_github("zkamvar/vise")
+            cat("G")
             if (file.exists("DESCRIPTION")) {
               file.rename("DESCRIPTION", "DESCRIPTION.bak")
             }
+            cat("H")
             Sys.setenv("RENV_PROFILE" = "lesson-requirements")
+            cat("I")
             vise::lock2desc(renv::paths$lockfile(), desc = "${{ github.workspace }}/DESCRIPTION")
+            cat("J")
             writeLines(readLines("${{ github.workspace }}/DESCRIPTION"))
+            cat("K")
             vise::ci_sysreqs(renv::paths$lockfile(), execute = TRUE)
+            cat("L")
           }
+          cat("M")
 
       - name: "Fortify Local {renv} Packages"
         shell: Rscript {0}
